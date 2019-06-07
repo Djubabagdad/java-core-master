@@ -105,36 +105,32 @@ public class Rozetka {
             System.out.println(headphones.toString());
             chooseProduct(headphones);
         }
-        //        priceOfBasket(myBasket);
-    }
-
-
-    private static void priceOfBasket(Basket myBasket) {
-        double sum = 0;
-        for (Product product : myBasket.getPurchasedGoods()) {
-            sum += product.getPrice();
-        }
-        System.out.println(sum);
     }
 
     public static void chooseProduct(Category... categories) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
+        double sum = 0;
         while (!(writeName = reader.readLine()).equalsIgnoreCase("exit"))
             for (Category categorie : categories) {
                 for (Product product : categorie.getArrayOfProducts()) {
                     if (writeName.equals(product.getName())) {
-                        System.out.println(putProduct(product));
+                        putProduct(product);
+                        sum += product.getPrice();
                     }
                 }
             }
+        System.out.println(sum);
     }
 
     private static Product putProduct(Product product) {
         int i = 0;
-        i = myBasket[i].getCurrentElement();
+        if (myBasket[i] == null) {
+            myBasket[i] = new Basket();
+            myBasket[i].getPurchasedGoods();
+        }
         myBasket[i].getPurchasedGoods()[i] = product;
         i++;
-        return new Product();
+        return product;
     }
 }

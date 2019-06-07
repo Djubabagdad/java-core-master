@@ -16,7 +16,8 @@ public class Product {
     public Product(String name) {
         this.name = name;
     }
-    public Product(){
+
+    public Product() {
 
     }
 
@@ -30,6 +31,7 @@ public class Product {
 
     public double getPrice() {
         return price;
+
     }
 
     public void setPrice(double price) {
