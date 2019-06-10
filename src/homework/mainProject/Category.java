@@ -59,7 +59,7 @@ public class Category {
         for(Product product: arrayOfProducts){
             result += product.getName() + "\n";
         }
-        return "Category{"+ this.getName() + result + '}';
+        return "Category "+ this.getName() + "\n" + result;
     }
 
     public static class Builder {

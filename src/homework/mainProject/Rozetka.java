@@ -3,6 +3,11 @@ package homework.mainProject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 
 public class Rozetka {
 
@@ -10,6 +15,7 @@ public class Rozetka {
 
 
     public static void main(String[] args) throws IOException {
+
         Product product1Phone = new Product("Iphone X", 27000, 9.8);
         Product product2Phone = new Product("Meizu", 4500, 7.3);
         Product product3Phone = new Product("Huawei", 6000, 4.8);
@@ -37,7 +43,6 @@ public class Rozetka {
         Product product7Headphone = new Product("Shure", 10000, 6.5);
         Product product8Headphone = new Product("HyperX", 10000, 6.5);
         Product product9Headphone = new Product("Koss", 10000, 6.5);
-
 
         Category phone = Category.newBuilder(8)
                 .withName("Phones")
@@ -97,19 +102,23 @@ public class Rozetka {
 
         if (chooseYourCategory.equals(phone.getName())) {
             System.out.println(phone.toString());
-            chooseProduct(phone);
+            prepareBasket(phone);
         } else if (chooseYourCategory.equals(laptops.getName())) {
             System.out.println(laptops.toString());
-            chooseProduct(laptops);
+            prepareBasket(laptops);
         } else if (chooseYourCategory.equals(headphones.getName())) {
             System.out.println(headphones.toString());
-            chooseProduct(headphones);
+            prepareBasket(headphones);
         }
     }
 
-    public static void chooseProduct(Category... categories) throws IOException {
+    public static void prepareBasket(Category... categories) throws IOException {
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
+        String name = null;
+        String category = null;
+        double productPrice = 0;
         double sum = 0;
         while (!(writeName = reader.readLine()).equalsIgnoreCase("exit"))
             for (Category categorie : categories) {
@@ -117,13 +126,40 @@ public class Rozetka {
                     if (writeName.equals(product.getName())) {
                         putProduct(product);
                         sum += product.getPrice();
+                        name = product.getName();
+                        category = categorie.getName();
+                        productPrice = product.getPrice();
                     }
                 }
             }
-        System.out.println(sum);
+
+        LocalDate date = LocalDate.now();
+        Locale locale = new Locale("ru", "RU");
+        Locale locale2 = new Locale("en", "US");
+
+        NumberFormat numb = NumberFormat.getCurrencyInstance();
+
+        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale);
+
+        String check = rb.getString("str1");
+        String check1 = rb.getString("str2");
+        String check2 = rb.getString("str3");
+        String check3 = rb.getString("str4");
+        String check4 = rb.getString("str5");
+
+        System.out.println(check + date);
+        System.out.println();
+        System.out.println(check1);
+        System.out.println(check2);
+        System.out.format("%s", name);
+        System.out.format("%12s", category);
+        System.out.format("%14s%n", numb.format(productPrice));
+        System.out.println(check3);
+        System.out.printf("%s %24s", check4, numb.format(sum));
     }
 
     private static Product putProduct(Product product) {
+
         int i = 0;
         if (myBasket[i] == null) {
             myBasket[i] = new Basket();
@@ -131,6 +167,7 @@ public class Rozetka {
         }
         myBasket[i].getPurchasedGoods()[i] = product;
         i++;
+
         return product;
     }
 }
