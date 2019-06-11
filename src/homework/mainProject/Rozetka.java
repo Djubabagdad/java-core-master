@@ -133,13 +133,16 @@ public class Rozetka {
                 }
             }
 
+        someMethod(name, category, productPrice, sum);
+    }
+
+    static void someMethod(String name, String category, double productPrice, double sum) {
         LocalDate date = LocalDate.now();
         Locale locale = new Locale("ru", "RU");
         Locale locale2 = new Locale("en", "US");
 
         NumberFormat numb = NumberFormat.getCurrencyInstance();
-
-        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale);
+        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale2);
 
         String check = rb.getString("str1");
         String check1 = rb.getString("str2");
@@ -163,7 +166,7 @@ public class Rozetka {
         int i = 0;
         if (myBasket[i] == null) {
             myBasket[i] = new Basket();
-            myBasket[i].getPurchasedGoods();
+            //  myBasket[i].getPurchasedGoods();
         }
         myBasket[i].getPurchasedGoods()[i] = product;
         i++;
