@@ -7,11 +7,13 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 
 public class Rozetka {
 
     private static Basket[] myBasket = new Basket[10];
+    private static Category[] categ = new Category[3];
 
 
     public static void main(String[] args) throws IOException {
@@ -44,42 +46,40 @@ public class Rozetka {
         Product product8Headphone = new Product("HyperX", 10000, 6.5);
         Product product9Headphone = new Product("Koss", 10000, 6.5);
 
-        Category phone = Category.newBuilder(8)
-                .withName("Phones")
-                .addProduct(product1Phone)
-                .addProduct(product2Phone)
-                .addProduct(product3Phone)
-                .addProduct(product4Phone)
-                .addProduct(product5Phone)
-                .addProduct(product6Phone)
-                .addProduct(product7Phone)
-                .addProduct(product8Phone)
-                .build();
+        Category phones = new Category("Phones", new Product[10]);
+        categ[0] = phones;
+        phones.getArrayOfProducts()[0] = product1Phone;
+        phones.getArrayOfProducts()[1] = product2Phone;
+        phones.getArrayOfProducts()[2] = product3Phone;
+        phones.getArrayOfProducts()[3] = product4Phone;
+        phones.getArrayOfProducts()[4] = product5Phone;
+        phones.getArrayOfProducts()[5] = product6Phone;
+        phones.getArrayOfProducts()[6] = product7Phone;
+        phones.getArrayOfProducts()[7] = product8Phone;
 
-        Category laptops = Category.newBuilder(8)
-                .withName("Laptops")
-                .addProduct(product1Laptop)
-                .addProduct(product2Laptop)
-                .addProduct(product3Laptop)
-                .addProduct(product4Laptop)
-                .addProduct(product5Laptop)
-                .addProduct(product6Laptop)
-                .addProduct(product7Laptop)
-                .addProduct(product8Laptop)
-                .build();
 
-        Category headphones = Category.newBuilder(9)
-                .withName("Headphones")
-                .addProduct(product1Headphone)
-                .addProduct(product2Headphone)
-                .addProduct(product3Headphone)
-                .addProduct(product4Headphone)
-                .addProduct(product5Headphone)
-                .addProduct(product6Headphone)
-                .addProduct(product7Headphone)
-                .addProduct(product8Headphone)
-                .addProduct(product9Headphone)
-                .build();
+        Category laptops = new Category("Laptops", new Product[10]);
+        categ[1] = laptops;
+        laptops.getArrayOfProducts()[0] = product1Laptop;
+        laptops.getArrayOfProducts()[1] = product2Laptop;
+        laptops.getArrayOfProducts()[2] = product3Laptop;
+        laptops.getArrayOfProducts()[3] = product4Laptop;
+        laptops.getArrayOfProducts()[4] = product5Laptop;
+        laptops.getArrayOfProducts()[5] = product6Laptop;
+        laptops.getArrayOfProducts()[6] = product7Laptop;
+        laptops.getArrayOfProducts()[7] = product8Laptop;
+
+        Category headphones = new Category("Headphones", new Product[10]);
+        categ[2] = headphones;
+        headphones.getArrayOfProducts()[0] = product1Headphone;
+        headphones.getArrayOfProducts()[1] = product2Headphone;
+        headphones.getArrayOfProducts()[2] = product3Headphone;
+        headphones.getArrayOfProducts()[3] = product4Headphone;
+        headphones.getArrayOfProducts()[4] = product5Headphone;
+        headphones.getArrayOfProducts()[5] = product6Headphone;
+        headphones.getArrayOfProducts()[6] = product7Headphone;
+        headphones.getArrayOfProducts()[7] = product8Headphone;
+        headphones.getArrayOfProducts()[8] = product9Headphone;
 
         User newUser = new User.Builder()
                 .withLogin("Djubabagdad")
@@ -92,23 +92,28 @@ public class Rozetka {
         String authentication1 = reader.readLine();
         String authentication = reader.readLine();
 
-        if (authentication.equals(newUser.getPassword()) && authentication1.equals(newUser.getLogin())) {
-            System.out.println("Welcome");
-        } else {
-            System.out.println("Get out!");
-        }
-        System.out.println(phone.getName() + " " + laptops.getName() + " " + headphones.getName());
-        String chooseYourCategory = reader.readLine();
+        Predicate<String> stringIsNotEmpty = str -> !str.isEmpty();
+        Predicate<String> stringIsNotNull = str -> str != null;
+        Predicate<String> myAuthentication = stringIsNotEmpty.and(stringIsNotNull);
 
-        if (chooseYourCategory.equals(phone.getName())) {
-            System.out.println(phone.toString());
-            prepareBasket(phone);
-        } else if (chooseYourCategory.equals(laptops.getName())) {
-            System.out.println(laptops.toString());
-            prepareBasket(laptops);
-        } else if (chooseYourCategory.equals(headphones.getName())) {
-            System.out.println(headphones.toString());
-            prepareBasket(headphones);
+        comeIn:
+        if (myAuthentication.test(authentication)) {
+            if (authentication.equals(newUser.getPassword()) && authentication1.equals(newUser.getLogin())) {
+                System.out.println("Welcome");
+                System.out.println(phones.getName() + " " + laptops.getName() + " " + headphones.getName());
+                String chooseYourCategory = reader.readLine();
+                for (int i = 0; i < categ.length; i++)
+                    if (chooseYourCategory.equals(categ[i].getName())) {
+                        System.out.println(phones.toString());
+                        prepareBasket(phones);
+                    } else if (chooseYourCategory.equals(categ[i].getName())) {
+                        System.out.println(laptops.toString());
+                        prepareBasket(laptops);
+                    } else if (chooseYourCategory.equals(categ[i].getName())) {
+                        System.out.println(headphones.toString());
+                        prepareBasket(headphones);
+                    }
+            }
         }
     }
 
@@ -133,10 +138,10 @@ public class Rozetka {
                 }
             }
 
-        someMethod(name, category, productPrice, sum);
+        printCheck(name, category, productPrice, sum);
     }
 
-    static void someMethod(String name, String category, double productPrice, double sum) {
+    static void printCheck(String name, String category, double productPrice, double sum) {
         LocalDate date = LocalDate.now();
         Locale locale = new Locale("ru", "RU");
         Locale locale2 = new Locale("en", "US");

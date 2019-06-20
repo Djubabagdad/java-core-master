@@ -12,15 +12,6 @@ public class Category {
         this.arrayOfProducts = arrayOfProducts;
     }
 
-    public static Builder newBuilder(int num) {
-        return new Builder(num);
-    }
-
-    private Category(Builder builder) {
-        this.name = builder.name;
-        this.arrayOfProducts = builder.products;
-    }
-
     public String getName() {
         return name;
     }
@@ -55,44 +46,8 @@ public class Category {
 
     @Override
     public String toString() {
-        String result = "";
-        for(Product product: arrayOfProducts){
-            result += product.getName() + "\n";
-        }
-        return "Category "+ this.getName() + "\n" + result;
-    }
-
-    public static class Builder {
-
-        private String name;
-        private int arrayIndex = 0;
-        private Product[] products;
-
-        public Builder(int numb) {
-            products = new Product[numb];
-        }
-
-        public Builder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder addProduct(Product product) {
-            products[arrayIndex] = product;
-            arrayIndex++;
-            return this;
-        }
-
-        public Builder addProducts(Product... products) {
-            for (Product product : products) {
-                products[arrayIndex] = product;
-                arrayIndex++;
-            }
-            return this;
-        }
-
-        public Category build() {
-            return new Category(this);
-        }
+        return "Category{" +
+                "arrayOfProducts=" + Arrays.toString(arrayOfProducts) +
+                '}';
     }
 }
