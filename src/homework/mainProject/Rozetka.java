@@ -132,6 +132,7 @@ public class Rozetka {
         while (!(writeName = reader.readLine()).equalsIgnoreCase("exit"))
             for (Category categorie : categories) {
                 for (Product product : categorie.getArrayOfProducts()) {
+                    if (product == null) continue;
                     if (writeName.equals(product.getName())) {
                         putProduct(product);
                         sum += product.getPrice();
