@@ -97,7 +97,7 @@ public class Rozetka {
         Predicate<String> myAuthentication = stringIsNotEmpty.and(stringIsNotNull);
 
         comeIn:
-        if (myAuthentication.test(authentication)) {
+        if (myAuthentication.test(authentication) && myAuthentication.test(authentication1)) {
             if (authentication.equals(newUser.getPassword()) && authentication1.equals(newUser.getLogin())) {
                 System.out.println("Welcome");
                 System.out.println(phones.getName() + " " + laptops.getName() + " " + headphones.getName());
@@ -113,7 +113,11 @@ public class Rozetka {
                         System.out.println(headphones.toString());
                         prepareBasket(headphones);
                     }
+            }else{
+                System.out.println("Login or Password is incorrect");
             }
+        }else{
+            System.out.println("Here is Empty");
         }
     }
 
@@ -122,7 +126,7 @@ public class Rozetka {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
         String name = null;
-        String category = null;
+        String categoryName = null;
         double productPrice = 0;
         double sum = 0;
         while (!(writeName = reader.readLine()).equalsIgnoreCase("exit"))
@@ -132,13 +136,13 @@ public class Rozetka {
                         putProduct(product);
                         sum += product.getPrice();
                         name = product.getName();
-                        category = categorie.getName();
+                        categoryName = categorie.getName();
                         productPrice = product.getPrice();
                     }
                 }
             }
 
-        printCheck(name, category, productPrice, sum);
+        printCheck(name, categoryName, productPrice, sum);
     }
 
     static void printCheck(String name, String category, double productPrice, double sum) {
