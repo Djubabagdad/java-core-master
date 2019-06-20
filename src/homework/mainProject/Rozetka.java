@@ -14,6 +14,7 @@ public class Rozetka {
 
     private static Basket[] myBasket = new Basket[10];
     private static Category[] categ = new Category[3];
+    private static int i = 0;
 
 
     public static void main(String[] args) throws IOException {
@@ -113,10 +114,10 @@ public class Rozetka {
                         System.out.println(headphones.toString());
                         prepareBasket(headphones);
                     }
-            }else{
+            } else {
                 System.out.println("Login or Password is incorrect");
             }
-        }else{
+        } else {
             System.out.println("Here is Empty");
         }
     }
@@ -164,23 +165,32 @@ public class Rozetka {
         System.out.println();
         System.out.println(check1);
         System.out.println(check2);
-        System.out.format("%s", name);
-        System.out.format("%12s", category);
-        System.out.format("%14s%n", numb.format(productPrice));
+        checkProducts(category);
         System.out.println(check3);
         System.out.printf("%s %24s", check4, numb.format(sum));
     }
 
     private static Product putProduct(Product product) {
 
-        int i = 0;
         if (myBasket[i] == null) {
             myBasket[i] = new Basket();
-            //  myBasket[i].getPurchasedGoods();
         }
         myBasket[i].getPurchasedGoods()[i] = product;
         i++;
 
         return product;
+    }
+
+    private static void checkProducts(String category) {
+        for (Basket basket : myBasket) {
+            if (basket == null) continue;
+            for (Product product : basket.getPurchasedGoods()) {
+                if (product == null) continue;
+                NumberFormat numb = NumberFormat.getCurrencyInstance();
+                System.out.format("%s", product.getName());
+                System.out.format("%12s", category);
+                System.out.format("%14s%n", numb.format(product.getPrice()));
+            }
+        }
     }
 }
