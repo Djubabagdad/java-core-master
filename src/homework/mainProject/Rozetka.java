@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public class Rozetka {
 
     private static Basket[] myBasket = new Basket[10];
-    private static Category[] categ = new Category[3];
+    private static Category[] category = new Category[3];
     private static int i = 0;
 
 
@@ -48,7 +48,7 @@ public class Rozetka {
         Product product9Headphone = new Product("Koss", 10000, 6.5);
 
         Category phones = new Category("Phones", new Product[10]);
-        categ[0] = phones;
+        category[0] = phones;
         phones.getArrayOfProducts()[0] = product1Phone;
         phones.getArrayOfProducts()[1] = product2Phone;
         phones.getArrayOfProducts()[2] = product3Phone;
@@ -60,7 +60,7 @@ public class Rozetka {
 
 
         Category laptops = new Category("Laptops", new Product[10]);
-        categ[1] = laptops;
+        category[1] = laptops;
         laptops.getArrayOfProducts()[0] = product1Laptop;
         laptops.getArrayOfProducts()[1] = product2Laptop;
         laptops.getArrayOfProducts()[2] = product3Laptop;
@@ -71,7 +71,7 @@ public class Rozetka {
         laptops.getArrayOfProducts()[7] = product8Laptop;
 
         Category headphones = new Category("Headphones", new Product[10]);
-        categ[2] = headphones;
+        category[2] = headphones;
         headphones.getArrayOfProducts()[0] = product1Headphone;
         headphones.getArrayOfProducts()[1] = product2Headphone;
         headphones.getArrayOfProducts()[2] = product3Headphone;
@@ -90,35 +90,26 @@ public class Rozetka {
         System.out.println("Введите Ваш логин и пароль ниже :");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String authentication1 = reader.readLine();
-        String authentication = reader.readLine();
+        String login = reader.readLine();
+        String password = reader.readLine();
 
         Predicate<String> stringIsNotEmpty = str -> !str.isEmpty();
         Predicate<String> stringIsNotNull = str -> str != null;
         Predicate<String> myAuthentication = stringIsNotEmpty.and(stringIsNotNull);
 
         comeIn:
-        if (myAuthentication.test(authentication) && myAuthentication.test(authentication1)) {
-            if (authentication.equals(newUser.getPassword()) && authentication1.equals(newUser.getLogin())) {
-                System.out.println("Welcome");
-                System.out.println(phones.getName() + " " + laptops.getName() + " " + headphones.getName());
-                String chooseYourCategory = reader.readLine();
-                for (int i = 0; i < categ.length; i++)
-                    if (chooseYourCategory.equals(categ[i].getName())) {
-                        System.out.println(phones.toString());
-                        prepareBasket(phones);
-                    } else if (chooseYourCategory.equals(categ[i].getName())) {
-                        System.out.println(laptops.toString());
-                        prepareBasket(laptops);
-                    } else if (chooseYourCategory.equals(categ[i].getName())) {
-                        System.out.println(headphones.toString());
-                        prepareBasket(headphones);
-                    }
-            } else {
-                System.out.println("Login or Password is incorrect");
-            }
+        if (myAuthentication.test(login) && myAuthentication.test(password) &&
+                password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())) {
+            System.out.println("Welcome");
+            System.out.println(phones.getName() + " " + laptops.getName() + " " + headphones.getName());
+            String chooseYourCategory = reader.readLine();
+            for (Category category : category)
+                if (chooseYourCategory.equals(category.getName())) {
+                    System.out.println(category);
+                    prepareBasket(category);
+                }
         } else {
-            System.out.println("Here is Empty");
+            System.out.println("Login or Password is incorrect, or lines are empty");
         }
     }
 
@@ -126,28 +117,24 @@ public class Rozetka {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
-        String name = null;
         String categoryName = null;
-        double productPrice = 0;
         double sum = 0;
-        while (!(writeName = reader.readLine()).equalsIgnoreCase("exit"))
-            for (Category categorie : categories) {
-                for (Product product : categorie.getArrayOfProducts()) {
+        while (!(writeName = reader.readLine()).equalsIgnoreCase("buy"))
+            for (Category newCategory : categories) {
+                for (Product product : newCategory.getArrayOfProducts()) {
                     if (product == null) continue;
                     if (writeName.equals(product.getName())) {
                         putProduct(product);
                         sum += product.getPrice();
-                        name = product.getName();
-                        categoryName = categorie.getName();
-                        productPrice = product.getPrice();
+                        categoryName = newCategory.getName();
                     }
                 }
             }
 
-        printCheck(name, categoryName, productPrice, sum);
+        printCheck(categoryName, sum);
     }
 
-    static void printCheck(String name, String category, double productPrice, double sum) {
+    static void printCheck(String category, double sum) {
         LocalDate date = LocalDate.now();
         Locale locale = new Locale("ru", "RU");
         Locale locale2 = new Locale("en", "US");
@@ -187,9 +174,7 @@ public class Rozetka {
             for (Product product : basket.getPurchasedGoods()) {
                 if (product == null) continue;
                 NumberFormat numb = NumberFormat.getCurrencyInstance();
-                System.out.format("%s", product.getName());
-                System.out.format("%12s", category);
-                System.out.format("%14s%n", numb.format(product.getPrice()));
+                System.out.format("%s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
             }
         }
     }

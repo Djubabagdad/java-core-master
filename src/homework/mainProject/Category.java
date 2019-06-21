@@ -46,8 +46,11 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "arrayOfProducts=" + Arrays.toString(arrayOfProducts) +
-                '}';
+        String result = "";
+        for (Product product : arrayOfProducts) {
+            if (product == null) continue;
+            result += product.getName() + "      " + product.getPrice() + "      " + product.getRate() + "\n";
+        }
+        return "Category   " + this.getName() + "\n" + result;
     }
 }
