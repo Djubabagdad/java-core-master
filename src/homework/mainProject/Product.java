@@ -63,9 +63,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return "name='" + name + '\'' +
-                ", price=" + price +
-                '}';
-    }
+        for (int i = 0; i < 1; i++) {
+            System.out.format("%-10s %8.2f %5.1f %n",name, price, rate);
 
+        }
+        return "";
+    }
 }

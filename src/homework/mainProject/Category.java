@@ -1,15 +1,16 @@
 package homework.mainProject;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Category {
     private String name;
-    private Product[] arrayOfProducts;
+    Map<String, Product> productMap = new HashMap<>();
 
-    public Category(String name, Product[] arrayOfProducts) {
+    public Category(String name, Map<String, Product> productMap) {
         this.name = name;
-        this.arrayOfProducts = arrayOfProducts;
+        this.productMap = productMap;
     }
 
     public String getName() {
@@ -20,12 +21,12 @@ public class Category {
         this.name = name;
     }
 
-    public Product[] getArrayOfProducts() {
-        return arrayOfProducts;
+    public Map<String, Product> getProductMap() {
+        return productMap;
     }
 
-    public void setArrayOfProducts(Product[] arrayOfProducts) {
-        this.arrayOfProducts = arrayOfProducts;
+    public void setProductMap(Map<String, Product> productMap) {
+        this.productMap = productMap;
     }
 
     @Override
@@ -33,24 +34,18 @@ public class Category {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
-        return name.equals(category.name) &&
-                Arrays.equals(arrayOfProducts, category.arrayOfProducts);
+        return Objects.equals(name, category.name) &&
+                Objects.equals(productMap, category.productMap);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(name);
-        result = 31 * result + Arrays.hashCode(arrayOfProducts);
-        return result;
+        return Objects.hash(name, productMap);
     }
 
     @Override
     public String toString() {
-        String result = "";
-        for (Product product : arrayOfProducts) {
-            if (product == null) continue;
-            result += product.getName() + "      " + product.getPrice() + "      " + product.getRate() + "\n";
-        }
-        return "Category   " + this.getName() + "\n" + result;
+        System.out.println(name + productMap);
+        return "";
     }
 }

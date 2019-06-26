@@ -10,11 +10,10 @@ public class User {
     public User() {
     }
 
-    private User(Builder builder) {
-        this.login = builder.login;
-        this.password = builder.password;
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
-
 
     public String getLogin() {
         return login;
@@ -52,25 +51,5 @@ public class User {
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';
-    }
-    public static class Builder{
-
-        private String login;
-        private String password;
-
-        public Builder(){
-
-        }
-        public Builder withLogin(String login){
-            this.login = login;
-            return this;
-        }
-        public Builder withPassword(String password){
-            this.password = password;
-            return this;
-        }
-        public User build(){
-            return new User(this);
-        }
     }
 }
