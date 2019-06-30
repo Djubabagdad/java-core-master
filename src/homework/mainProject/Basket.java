@@ -1,33 +1,22 @@
 package homework.mainProject;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Basket {
-    private Product[] purchasedGoods = new Product[10];
-    private int currentElement;
+        List<Product> getPurchasedGoods = new ArrayList<>();
 
-    public Basket() {
-
+    public Basket(List<Product> getPurchasedGoods) {
+        this.getPurchasedGoods = getPurchasedGoods;
     }
 
-    public Basket(Product[] purchasedGoods) {
-        this.purchasedGoods = purchasedGoods;
+    public List<Product> getGetPurchasedGoods() {
+        return getPurchasedGoods;
     }
 
-    public int getCurrentElement() {
-        return currentElement;
-    }
-
-    public void setCurrentElement(int currentElement) {
-        this.currentElement = currentElement;
-    }
-
-    public Product[] getPurchasedGoods() {
-        return purchasedGoods;
-    }
-
-    public void setPurchasedGoods(Product[] purchasedGoods) {
-        this.purchasedGoods = purchasedGoods;
+    public void setGetPurchasedGoods(List<Product> getPurchasedGoods) {
+        this.getPurchasedGoods = getPurchasedGoods;
     }
 
     @Override
@@ -35,18 +24,18 @@ public class Basket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Basket basket = (Basket) o;
-        return Arrays.equals(purchasedGoods, basket.purchasedGoods);
+        return Objects.equals(getPurchasedGoods, basket.getPurchasedGoods);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(purchasedGoods);
+        return Objects.hash(getPurchasedGoods);
     }
 
     @Override
     public String toString() {
         return "Basket{" +
-                "purchasedGoods=" + Arrays.toString(purchasedGoods) +
+                "getPurchasedGoods=" + getPurchasedGoods +
                 '}';
     }
 }

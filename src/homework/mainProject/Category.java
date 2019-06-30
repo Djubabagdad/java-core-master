@@ -1,16 +1,14 @@
 package homework.mainProject;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Category {
     private String name;
-    Map<String, Product> productMap = new HashMap<>();
+    List<Product> products = new ArrayList<>();
 
-    public Category(String name, Map<String, Product> productMap) {
+    public Category(String name, List<Product> products) {
         this.name = name;
-        this.productMap = productMap;
+        this.products = products;
     }
 
     public String getName() {
@@ -21,12 +19,12 @@ public class Category {
         this.name = name;
     }
 
-    public Map<String, Product> getProductMap() {
-        return productMap;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setProductMap(Map<String, Product> productMap) {
-        this.productMap = productMap;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
@@ -35,17 +33,17 @@ public class Category {
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
         return Objects.equals(name, category.name) &&
-                Objects.equals(productMap, category.productMap);
+                Objects.equals(products, category.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, productMap);
+        return Objects.hash(name, products);
     }
 
     @Override
     public String toString() {
-        System.out.println(name + productMap);
+        System.out.println(name + products);
         return "";
     }
 }
