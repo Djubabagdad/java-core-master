@@ -82,106 +82,112 @@ public class Rozetka {
 
 
         User newUser = new User("D", "1");
-
-        System.out.println("Введите Ваш логин и пароль ниже :");
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String login = reader.readLine();
-        String password = reader.readLine();
+        String login = null;
+        String password;
 
         Predicate<String> stringIsNotEmpty = str -> !str.isEmpty();
         Predicate<String> stringIsNotNull = Objects::nonNull;
         Predicate<String> myAuthentication = stringIsNotEmpty.and(stringIsNotNull);
-        if (myAuthentication.test(login) && myAuthentication.test(password) &&
-                password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())) {
-            System.out.println("Welcome");
-            System.out.println(phone.getName() + " " + laptop.getName() + " " + headphone.getName());
-            String chooseYourCategory = reader.readLine();
-            System.out.println(phone.getName() + " " + laptop.getName() + " " + headphone.getName());
-            switch (chooseYourCategory) {
-                case "Phones": {
-                    Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                    sortedCategory.addAll(phones);
-                    sortedCategory.forEach(System.out::println);
-                    prepareBasket(phones, phone);
-                    break;
-                }
-                case "Laptops": {
-                    Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                    sortedCategory.addAll(laptops);
-                    sortedCategory.forEach(System.out::println);
-                    prepareBasket(laptops, laptop);
-                    break;
-                }
-                case "Headphones": {
-                    Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                    sortedCategory.addAll(headphones);
-                    sortedCategory.forEach(System.out::println);
-                    prepareBasket(headphones, headphone);
-                    break;
-                }
-            }
-        }
-    }
 
-
-        private static void prepareBasket (List < Product > category, Category categories) throws IOException {
+        do {
+            System.out.println(login == null ? "Введите Ваш логин и пароль ниже :" : "Неправильный логин или пароль, повторите.");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String writeName;
-            String categoryName = null;
-            double sum = 0;
-            while (!(writeName = reader.readLine()).equalsIgnoreCase("buy")) {
-                for (Product product : category) {
-                    if (product == null) {
-                        continue;
-                    }
-                    if (writeName.equals(product.getName())) {
-                        putProduct(product);
-                        sum += product.getPrice();
-                        categoryName = categories.getName();
-                    }
+            login = reader.readLine();
+            password = reader.readLine();
+
+        } while (!(myAuthentication.test(login) && myAuthentication.test(password) &&
+                password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())));
+
+        System.out.println("Welcome");
+
+        BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
+        String chooseYourCategory = reader1.readLine();
+
+        System.out.println(phone.getName() + " " + laptop.getName() + " " + headphone.getName());
+        switch (chooseYourCategory) {
+            case "Phones": {
+                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
+                sortedCategory.addAll(phones);
+                sortedCategory.forEach(System.out::println);
+                prepareBasket(phones, phone);
+                break;
+            }
+            case "Laptops": {
+                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
+                sortedCategory.addAll(laptops);
+                sortedCategory.forEach(System.out::println);
+                prepareBasket(laptops, laptop);
+                break;
+            }
+            case "Headphones": {
+                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
+                sortedCategory.addAll(headphones);
+                sortedCategory.forEach(System.out::println);
+                prepareBasket(headphones, headphone);
+                break;
+            }
+        }
+    }
+
+
+    private static void prepareBasket(List<Product> category, Category categories) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String writeName;
+        String categoryName = null;
+        double sum = 0;
+        while (!(writeName = reader.readLine()).equalsIgnoreCase("buy")) {
+            for (Product product : category) {
+                if (product == null) {
+                    continue;
+                }
+                if (writeName.equals(product.getName())) {
+                    putProduct(product);
+                    sum += product.getPrice();
+                    categoryName = categories.getName();
                 }
             }
-
-            printCheck(categoryName, sum);
         }
 
-
-        private static void printCheck (String category,double sum){
-            Locale locale = new Locale("ru", "RU");
-            Locale locale2 = new Locale("en", "US");
-            Locale.setDefault(locale2);
-
-            ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale);
-
-            NumberFormat numb = NumberFormat.getCurrencyInstance();
-            LocalDate date = LocalDate.now();
-
-            String dateOnCheck = rb.getString("Date");
-            String categoriesNames = rb.getString("Names");
-            String separator1 = rb.getString("Separator1");
-            String separator2 = rb.getString("Separator2");
-            String amount = rb.getString("Amount");
-
-            System.out.println(dateOnCheck + date);
-            System.out.println();
-            System.out.println(categoriesNames);
-            System.out.println(separator1);
-            printProducts(category);
-            System.out.println(separator2);
-            System.out.printf("%s %24s", amount, numb.format(sum));
-        }
-
-        private static void putProduct (Product product){
-            myBasket.add(product);
-        }
-
-        private static void printProducts (String category){
-            NumberFormat numb = NumberFormat.getCurrencyInstance();
-            for (Product product : myBasket) {
-                System.out.format("%-5s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
-            }
-        }
-
+        printCheck(categoryName, sum);
     }
+
+
+    private static void printCheck(String category, double sum) {
+        Locale locale = new Locale("ru", "RU");
+        Locale locale2 = new Locale("en", "US");
+        Locale.setDefault(locale2);
+
+        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale);
+
+        NumberFormat numb = NumberFormat.getCurrencyInstance();
+        LocalDate date = LocalDate.now();
+
+        String dateOnCheck = rb.getString("Date");
+        String categoriesNames = rb.getString("Names");
+        String separator1 = rb.getString("Separator1");
+        String separator2 = rb.getString("Separator2");
+        String amount = rb.getString("Amount");
+
+        System.out.println(dateOnCheck + date);
+        System.out.println();
+        System.out.println(categoriesNames);
+        System.out.println(separator1);
+        printProducts(category);
+        System.out.println(separator2);
+        System.out.printf("%s %24s", amount, numb.format(sum));
+    }
+
+    private static void putProduct(Product product) {
+        myBasket.add(product);
+    }
+
+    private static void printProducts(String category) {
+        NumberFormat numb = NumberFormat.getCurrencyInstance();
+        for (Product product : myBasket) {
+            System.out.format("%-5s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
+        }
+    }
+
+}
