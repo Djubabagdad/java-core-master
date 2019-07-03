@@ -1,4 +1,7 @@
-package homework.mainProject;
+package mainProject;
+
+import classwork.lesson10.lesson18.WrongLoginException;
+import classwork.lesson10.lesson18.WrongPasswordException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +15,13 @@ import java.util.function.Predicate;
 public class Rozetka {
 
     private static List<Product> myBasket = new ArrayList<>();
+    private static Map<String, Category> categories = new HashMap<>();
     private static List<Product> phones = new ArrayList<>();
     private static List<Product> laptops = new ArrayList<>();
     private static List<Product> headphones = new ArrayList<>();
-    private static Category phone = new Category("Phones", headphones);
+    private static Category phone = new Category("Phones", phones);
     private static Category laptop = new Category("Laptops", laptops);
-    private static Category headphone = new Category("Headphones", phones);
+    private static Category headphone = new Category("Headphones", headphones);
 
 
     public static void main(String[] args) throws IOException {
@@ -80,6 +84,10 @@ public class Rozetka {
         headphones.add(product8Headphone);
         headphones.add(product9Headphone);
 
+        categories.put("Phones", phone);
+        categories.put("Laptops", laptop);
+        categories.put("Headphones", headphone);
+
 
         User newUser = new User("D", "1");
         String login = null;
@@ -96,36 +104,33 @@ public class Rozetka {
             login = reader.readLine();
             password = reader.readLine();
 
+            verify(login, password);
+
         } while (!(myAuthentication.test(login) && myAuthentication.test(password) &&
                 password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())));
 
         System.out.println("Welcome");
 
+        Set<String> keys = categories.keySet();
+
+        for (String key : keys) {
+            System.out.print(key + "   ");
+        }
+        System.out.println();
+
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
         String chooseYourCategory = reader1.readLine();
 
-        System.out.println(phone.getName() + " " + laptop.getName() + " " + headphone.getName());
-        switch (chooseYourCategory) {
-            case "Phones": {
-                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                sortedCategory.addAll(phones);
-                sortedCategory.forEach(System.out::println);
-                prepareBasket(phones, phone);
-                break;
-            }
-            case "Laptops": {
-                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                sortedCategory.addAll(laptops);
-                sortedCategory.forEach(System.out::println);
-                prepareBasket(laptops, laptop);
-                break;
-            }
-            case "Headphones": {
-                Set<Product> sortedCategory = new TreeSet<>(Comparator.comparing(Product::getRate).reversed());
-                sortedCategory.addAll(headphones);
-                sortedCategory.forEach(System.out::println);
-                prepareBasket(headphones, headphone);
-                break;
+
+        for (String key : keys) {
+            if (chooseYourCategory.equals(key)) {
+                for (Category category : categories.values()) {
+                    if (key.equals(category.getName())) {
+                        category.getProducts().sort(Comparator.comparing(Product::getRate).reversed());
+                        category.getProducts().forEach(System.out::println);
+                        prepareBasket(category.getProducts(), category);
+                    }
+                }
             }
         }
     }
@@ -188,6 +193,21 @@ public class Rozetka {
         for (Product product : myBasket) {
             System.out.format("%-5s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
         }
+    }
+    private static boolean verify(String login, String password)  {
+        try {
+            if (login.length()>20){
+                throw new WrongLoginException("Login > 20");
+            }
+            if(password.length()>20){
+                throw new WrongPasswordException("Password > 20");
+            }
+        } catch (WrongLoginException | WrongPasswordException e) {
+            System.out.println( e.getMessage());
+            System.out.println();
+            return false;
+        }
+        return true;
     }
 
 }

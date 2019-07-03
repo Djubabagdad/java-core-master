@@ -1,4 +1,4 @@
-package homework.mainProject;
+package mainProject;
 
 import java.util.Objects;
 
