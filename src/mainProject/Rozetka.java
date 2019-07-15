@@ -1,11 +1,9 @@
 package mainProject;
 
-import classwork.lesson10.lesson18.WrongLoginException;
-import classwork.lesson10.lesson18.WrongPasswordException;
+import classwork.lesson18.WrongLoginException;
+import classwork.lesson18.WrongPasswordException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -22,6 +20,7 @@ public class Rozetka {
     private static Category phone = new Category("Phones", phones);
     private static Category laptop = new Category("Laptops", laptops);
     private static Category headphone = new Category("Headphones", headphones);
+    private static File file = new File("report.txt");
 
 
     public static void main(String[] args) throws IOException {
@@ -53,7 +52,6 @@ public class Rozetka {
         Product product7Headphone = new Product("Shure", 10000, 1.5);
         Product product8Headphone = new Product("HyperX", 10000, 6.1);
         Product product9Headphone = new Product("Koss", 10000, 6.8);
-
 
         phones.add(product1Phone);
         phones.add(product2Phone);
@@ -98,7 +96,7 @@ public class Rozetka {
         Predicate<String> myAuthentication = stringIsNotEmpty.and(stringIsNotNull);
 
         do {
-            System.out.println(login == null ? "Введите Ваш логин и пароль ниже :" : "Неправильный логин или пароль, повторите.");
+            System.out.println(login == null ? "Write your login and password :" : "Incorrect login or password, try one more time");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             login = reader.readLine();
@@ -121,20 +119,14 @@ public class Rozetka {
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
         String chooseYourCategory = reader1.readLine();
 
+        Category category = categories.get(chooseYourCategory);
 
-        for (String key : keys) {
-            if (chooseYourCategory.equals(key)) {
-                for (Category category : categories.values()) {
-                    if (key.equals(category.getName())) {
-                        category.getProducts().sort(Comparator.comparing(Product::getRate).reversed());
-                        category.getProducts().forEach(System.out::println);
-                        prepareBasket(category.getProducts(), category);
-                    }
-                }
-            }
+        if (category != null) {
+            category.getProducts().sort(Comparator.comparing(Product::getRate).reversed());
+            category.getProducts().forEach(System.out::println);
+            prepareBasket(category.getProducts(), category);
         }
     }
-
 
     private static void prepareBasket(List<Product> category, Category categories) throws IOException {
 
@@ -193,17 +185,30 @@ public class Rozetka {
         for (Product product : myBasket) {
             System.out.format("%-5s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
         }
+        printReport(category);
     }
-    private static boolean verify(String login, String password)  {
+
+    private static void printReport(String category) {
+        for (Product product : myBasket) {
+            try (FileWriter fw = new FileWriter(file, true)) {
+                fw.write(product.getName() + " " + " " + category + " " + product.getPrice());
+                fw.append('\n');
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private static boolean verify(String login, String password) {
         try {
-            if (login.length()>20){
+            if (login.length() > 20) {
                 throw new WrongLoginException("Login > 20");
             }
-            if(password.length()>20){
+            if (password.length() > 20) {
                 throw new WrongPasswordException("Password > 20");
             }
         } catch (WrongLoginException | WrongPasswordException e) {
-            System.out.println( e.getMessage());
+            System.out.println(e.getMessage());
             System.out.println();
             return false;
         }
