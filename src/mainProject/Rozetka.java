@@ -21,6 +21,8 @@ public class Rozetka {
     private static Category laptop = new Category("Laptops", laptops);
     private static Category headphone = new Category("Headphones", headphones);
     private static File file = new File("report.txt");
+    private static double sum;
+    private static String categoryName;
 
 
     public static void main(String[] args) throws IOException {
@@ -90,6 +92,7 @@ public class Rozetka {
         User newUser = new User("D", "1");
         String login = null;
         String password;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         Predicate<String> stringIsNotEmpty = str -> !str.isEmpty();
         Predicate<String> stringIsNotNull = Objects::nonNull;
@@ -98,7 +101,6 @@ public class Rozetka {
         do {
             System.out.println(login == null ? "Write your login and password :" : "Incorrect login or password, try one more time");
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             login = reader.readLine();
             password = reader.readLine();
 
@@ -108,7 +110,27 @@ public class Rozetka {
                 password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())));
 
         System.out.println("Welcome");
+        System.out.println();
+        String command;
 
+
+        do {
+            System.out.println("Category  " + "Check  " + "Basket  " + "Exit");
+            command = reader.readLine();
+            if (command.equalsIgnoreCase("Category")) {
+                printCategories();
+                command = reader.readLine();
+            } else if (command.equalsIgnoreCase("Check")) {
+                printCheck(categoryName, sum);
+                command = reader.readLine();
+            } else if (command.equalsIgnoreCase("Basket")) {
+                System.out.println(myBasket);
+                command = reader.readLine();
+            }
+        } while (!(command.equalsIgnoreCase("exit")));
+    }
+
+    private static void printCategories() throws IOException {
         Set<String> keys = categories.keySet();
 
         for (String key : keys) {
@@ -132,33 +154,28 @@ public class Rozetka {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
-        String categoryName = null;
-        double sum = 0;
-        while (!(writeName = reader.readLine()).equalsIgnoreCase("buy")) {
+        while (!(writeName = reader.readLine()).equalsIgnoreCase("back")) {
             for (Product product : category) {
                 if (product == null) {
                     continue;
                 }
                 if (writeName.equals(product.getName())) {
-                    putProduct(product);
+                    myBasket.add(product);
                     sum += product.getPrice();
                     categoryName = categories.getName();
                 }
             }
         }
-
-        printCheck(categoryName, sum);
     }
 
 
     private static void printCheck(String category, double sum) {
         Locale locale = new Locale("ru", "RU");
         Locale locale2 = new Locale("en", "US");
-        Locale.setDefault(locale2);
+        Locale.setDefault(locale);
 
-        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale);
+        ResourceBundle rb = ResourceBundle.getBundle("buyersCheck", locale2);
 
-        NumberFormat numb = NumberFormat.getCurrencyInstance();
         LocalDate date = LocalDate.now();
 
         String dateOnCheck = rb.getString("Date");
@@ -173,17 +190,13 @@ public class Rozetka {
         System.out.println(separator1);
         printProducts(category);
         System.out.println(separator2);
-        System.out.printf("%s %24s", amount, numb.format(sum));
-    }
-
-    private static void putProduct(Product product) {
-        myBasket.add(product);
+        System.out.printf("%s %24s", amount, sum + " $");
     }
 
     private static void printProducts(String category) {
         NumberFormat numb = NumberFormat.getCurrencyInstance();
         for (Product product : myBasket) {
-            System.out.format("%-5s %12s %14s%n", product.getName(), category, numb.format(product.getPrice()));
+            System.out.format("%-5s %12s %11s%n", product.getName(), category, product.getPrice() + " $");
         }
         printReport(category);
     }
@@ -214,5 +227,4 @@ public class Rozetka {
         }
         return true;
     }
-
 }
