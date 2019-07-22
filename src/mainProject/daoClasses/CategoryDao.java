@@ -1,7 +1,7 @@
 package mainProject.daoClasses;
 
-import jdbc.AbstractDAO;
-import jdbc.ConnectorDB;
+import mainProject.jdbc.AbstractDAO;
+import mainProject.jdbc.ConnectorDB;
 import mainProject.Category;
 
 import java.sql.*;
