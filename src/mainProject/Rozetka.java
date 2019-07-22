@@ -2,9 +2,11 @@ package mainProject;
 
 import classwork.lesson18.WrongLoginException;
 import classwork.lesson18.WrongPasswordException;
+import mainProject.daoClasses.CategoryDao;
+import mainProject.daoClasses.ProductDao;
+import mainProject.daoClasses.UserDao;
 
 import java.io.*;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Predicate;
@@ -14,85 +16,22 @@ public class Rozetka {
 
     private static List<Product> myBasket = new ArrayList<>();
     private static Map<String, Category> categories = new HashMap<>();
-    private static List<Product> phones = new ArrayList<>();
-    private static List<Product> laptops = new ArrayList<>();
-    private static List<Product> headphones = new ArrayList<>();
-    private static Category phone = new Category("Phones", phones);
-    private static Category laptop = new Category("Laptops", laptops);
-    private static Category headphone = new Category("Headphones", headphones);
+    private static Category phones = new Category("Phones", 1);
+    private static Category laptops = new Category("Laptops", 2);
+    private static Category headphones = new Category("Headphones", 3);
     private static File file = new File("report.txt");
     private static double sum;
     private static String categoryName;
+    private static ProductDao productDao = new ProductDao();
+    private static UserDao userDao = new UserDao();
+    private static CategoryDao categoryDao = new CategoryDao();
+    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 
     public static void main(String[] args) throws IOException {
 
-        Product product1Phone = new Product("Iphone X", 27000, 9.8);
-        Product product2Phone = new Product("Meizu", 4500, 7.3);
-        Product product3Phone = new Product("Huawei", 6000, 4.8);
-        Product product4Phone = new Product("Asus", 9000, 3.3);
-        Product product5Phone = new Product("Motorolla", 2500, 5.5);
-        Product product6Phone = new Product("Nokia", 2000, 2.5);
-        Product product7Phone = new Product("Samsung", 7800, 10.0);
-        Product product8Phone = new Product("Iphone 5S", 27000, 9.3);
-
-        Product product1Laptop = new Product("Asus", 56000, 10.99);
-        Product product2Laptop = new Product("Dell", 34000, 5.4);
-        Product product3Laptop = new Product("Samsung", 9000, 3.2);
-        Product product4Laptop = new Product("MacBook", 34000, 9.5);
-        Product product5Laptop = new Product("Acer", 20000, 6.1);
-        Product product6Laptop = new Product("HP", 34000, 7.2);
-        Product product7Laptop = new Product("MSI", 56000, 5.1);
-        Product product8Laptop = new Product("Presigio", 56000, 2.2);
-
-        Product product1Headphone = new Product("Asus", 10000, 7.5);
-        Product product2Headphone = new Product("Dr.dre", 5550, 8.5);
-        Product product3Headphone = new Product("Beats", 650, 9.5);
-        Product product4Headphone = new Product("Xiaomi", 10000, 6.9);
-        Product product5Headphone = new Product("Sony", 10000, 2.5);
-        Product product6Headphone = new Product("Panasonic", 10000, 3.5);
-        Product product7Headphone = new Product("Shure", 10000, 1.5);
-        Product product8Headphone = new Product("HyperX", 10000, 6.1);
-        Product product9Headphone = new Product("Koss", 10000, 6.8);
-
-        phones.add(product1Phone);
-        phones.add(product2Phone);
-        phones.add(product3Phone);
-        phones.add(product4Phone);
-        phones.add(product5Phone);
-        phones.add(product6Phone);
-        phones.add(product7Phone);
-        phones.add(product8Phone);
-
-
-        laptops.add(product1Laptop);
-        laptops.add(product2Laptop);
-        laptops.add(product3Laptop);
-        laptops.add(product4Laptop);
-        laptops.add(product5Laptop);
-        laptops.add(product6Laptop);
-        laptops.add(product7Laptop);
-        laptops.add(product8Laptop);
-
-        headphones.add(product1Headphone);
-        headphones.add(product2Headphone);
-        headphones.add(product3Headphone);
-        headphones.add(product4Headphone);
-        headphones.add(product5Headphone);
-        headphones.add(product6Headphone);
-        headphones.add(product7Headphone);
-        headphones.add(product8Headphone);
-        headphones.add(product9Headphone);
-
-        categories.put("Phones", phone);
-        categories.put("Laptops", laptop);
-        categories.put("Headphones", headphone);
-
-
-        User newUser = new User("D", "1");
         String login = null;
         String password;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         Predicate<String> stringIsNotEmpty = str -> !str.isEmpty();
         Predicate<String> stringIsNotNull = Objects::nonNull;
@@ -107,7 +46,7 @@ public class Rozetka {
             verify(login, password);
 
         } while (!(myAuthentication.test(login) && myAuthentication.test(password) &&
-                password.equals(newUser.getPassword()) && login.equals(newUser.getLogin())));
+                !(userDao.findEntityByLoginAndPassword(login, password)).equals(true)));
 
         System.out.println("Welcome");
         System.out.println();
@@ -116,53 +55,47 @@ public class Rozetka {
 
         do {
             System.out.println("Category  " + "Check  " + "Basket  " + "Exit");
-            command = reader.readLine();
-            if (command.equalsIgnoreCase("Category")) {
-                printCategories();
-                command = reader.readLine();
-            } else if (command.equalsIgnoreCase("Check")) {
-                printCheck(categoryName, sum);
-                command = reader.readLine();
-            } else if (command.equalsIgnoreCase("Basket")) {
-                System.out.println(myBasket);
-                command = reader.readLine();
+            command = reader.readLine().toUpperCase();
+            switch (Operations.valueOf(command)) {
+                case CATEGORY:
+                    printCategories();
+                    break;
+                case CHECK:
+                    printCheck(categoryName, sum);
+                    break;
+                case BAKSET:
+                    System.out.println(myBasket);
             }
+            command = reader.readLine();
         } while (!(command.equalsIgnoreCase("exit")));
     }
 
     private static void printCategories() throws IOException {
-        Set<String> keys = categories.keySet();
+        System.out.println(categoryDao.findAll());
 
-        for (String key : keys) {
-            System.out.print(key + "   ");
-        }
-        System.out.println();
+        Scanner scanner = new Scanner(System.in);
+        int number = scanner.nextInt();
 
-        BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        String chooseYourCategory = reader1.readLine();
+        if (number != 0) {
+            System.out.println(productDao.findEntityByCategoryId(number));
+            Category category = categoryDao.findEntityById(number);
+            categoryName = category.getName();
+            prepareBasket(productDao.findEntityByCategoryId(number));
 
-        Category category = categories.get(chooseYourCategory);
-
-        if (category != null) {
-            category.getProducts().sort(Comparator.comparing(Product::getRate).reversed());
-            category.getProducts().forEach(System.out::println);
-            prepareBasket(category.getProducts(), category);
         }
     }
 
-    private static void prepareBasket(List<Product> category, Category categories) throws IOException {
+    private static void prepareBasket(List<Product> products) throws IOException {
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String writeName;
         while (!(writeName = reader.readLine()).equalsIgnoreCase("back")) {
-            for (Product product : category) {
+            for (Product product : products) {
                 if (product == null) {
                     continue;
                 }
                 if (writeName.equals(product.getName())) {
                     myBasket.add(product);
                     sum += product.getPrice();
-                    categoryName = categories.getName();
                 }
             }
         }
@@ -194,7 +127,6 @@ public class Rozetka {
     }
 
     private static void printProducts(String category) {
-        NumberFormat numb = NumberFormat.getCurrencyInstance();
         for (Product product : myBasket) {
             System.out.format("%-5s %12s %11s%n", product.getName(), category, product.getPrice() + " $");
         }
@@ -204,7 +136,7 @@ public class Rozetka {
     private static void printReport(String category) {
         for (Product product : myBasket) {
             try (FileWriter fw = new FileWriter(file, true)) {
-                fw.write(product.getName() + " " + " " + category + " " + product.getPrice());
+                fw.write(product.getName() + " " + category + " " + product.getPrice());
                 fw.append('\n');
             } catch (IOException e) {
                 System.out.println(e.getMessage());

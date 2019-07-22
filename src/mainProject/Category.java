@@ -6,11 +6,42 @@ import java.util.Objects;
 
 public class Category {
     private String name;
-    List<Product> products = new ArrayList<>();
+    private int category_id;
+    private List<Product> products = new ArrayList<>();
+
+
+    public Category(String name, int category_id) {
+        this.name = name;
+        this.category_id = category_id;
+    }
+
 
     public Category(String name, List<Product> products) {
         this.name = name;
         this.products = products;
+    }
+
+    public int getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return category_id == category.category_id &&
+                Objects.equals(name, category.name) &&
+                Objects.equals(products, category.products);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, category_id, products);
     }
 
     public String getName() {
@@ -30,22 +61,8 @@ public class Category {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return Objects.equals(name, category.name) &&
-                Objects.equals(products, category.products);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, products);
-    }
-
-    @Override
     public String toString() {
-        System.out.println(name + products);
+        System.out.println(name);
         return "";
     }
 }
