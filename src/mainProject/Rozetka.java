@@ -15,10 +15,6 @@ import java.util.function.Predicate;
 public class Rozetka {
 
     private static List<Product> myBasket = new ArrayList<>();
-    private static Map<String, Category> categories = new HashMap<>();
-    private static Category phones = new Category("Phones", 1);
-    private static Category laptops = new Category("Laptops", 2);
-    private static Category headphones = new Category("Headphones", 3);
     private static File file = new File("report.txt");
     private static double sum;
     private static String categoryName;
@@ -54,7 +50,7 @@ public class Rozetka {
 
 
         do {
-            System.out.println("Category  " + "Check  " + "Basket  " + "Exit");
+            System.out.println("Category  Check  " + "Basket  " + "Exit");
             command = reader.readLine().toUpperCase();
             switch (Operations.valueOf(command)) {
                 case CATEGORY:
@@ -72,16 +68,16 @@ public class Rozetka {
 
     private static void printCategories() throws IOException {
         System.out.println(categoryDao.findAll());
-
         Scanner scanner = new Scanner(System.in);
-        int number = scanner.nextInt();
+        if (scanner.hasNextInt()) {
+            int number = scanner.nextInt();
+            if (number != 0) {
+                System.out.println(productDao.findEntityByCategoryId(number));
+                Category category = categoryDao.findEntityById(number);
+                categoryName = category.getName();
+                prepareBasket(productDao.findEntityByCategoryId(number));
 
-        if (number != 0) {
-            System.out.println(productDao.findEntityByCategoryId(number));
-            Category category = categoryDao.findEntityById(number);
-            categoryName = category.getName();
-            prepareBasket(productDao.findEntityByCategoryId(number));
-
+            }
         }
     }
 
